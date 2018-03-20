@@ -16,12 +16,13 @@
 匹林就是连着一条横线或竖线5个同样的子。<br>
 五通可多下3个子，匹林和四斜可以多下2个子，方和斜可以多下1个子。<br>
 成型举例：（一代表空）<br>
-五通（共有如下两种）<br>
-黑一一一一&nbsp;&nbsp;&nbsp;&nbsp;一一一一黑<br>
-一黑一一一&nbsp;&nbsp;&nbsp;&nbsp;一一一黑一<br>
-一一黑一一&nbsp;&nbsp;&nbsp;&nbsp;一一黑一一<br>
-一一一黑一&nbsp;&nbsp;&nbsp;&nbsp;一黑一一一<br>
-一一一一黑&nbsp;&nbsp;&nbsp;&nbsp;黑一一一一<br>
+    
+    五通（共有如下两种）<br>
+    黑一一一一&nbsp;&nbsp;&nbsp;&nbsp;一一一一黑<br>
+    一黑一一一&nbsp;&nbsp;&nbsp;&nbsp;一一一黑一<br>
+    一一黑一一&nbsp;&nbsp;&nbsp;&nbsp;一一黑一一<br>
+    一一一黑一&nbsp;&nbsp;&nbsp;&nbsp;一黑一一一<br>
+    一一一一黑&nbsp;&nbsp;&nbsp;&nbsp;黑一一一一<br>
 
 四斜（共有如下四种）<br>
 一黑一一一&nbsp;&nbsp;&nbsp;&nbsp;一一一黑一&nbsp;&nbsp;&nbsp;&nbsp;一一一一一&nbsp;&nbsp;&nbsp;&nbsp;一一一一一<br>
