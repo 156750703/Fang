@@ -26,10 +26,11 @@ function getStatusInfo(status) {
             info += '走子阶段：' + color + '吃子，剩余' + status.availibleStep + '子可吃';
         }
     }
-    if (status.stage == C.STAGE_FINISH) {       
+    if (status.stage == C.STAGE_FINISH) {
+        var winColor = '';
         if (status.winner == C.BLACK) {
             winColor = '黑方';
-        } else if(status.winner == C.WHITE){
+        } else if (status.winner == C.WHITE) {
             winColor = '白方';
         }
         if (winColor) {
@@ -77,12 +78,24 @@ function displayFormations(status, formations) {
     infoArea.innerHTML = info + '<br>' + getStatusInfo(status);
 }
 
-function displayInfo(info) {
+function dispalyCannotMove(status) {
+    var info='',looserColor = '';
+    if (status.winner == C.BLACK) {
+        looserColor = '白方';
+    } else if (status.winner == C.WHITE) {
+        looserColor = '黑方';
+    }
+    info+=looserColor + '无法移动';
+    infoArea.innerHTML = info + '<br>' + getStatusInfo(status);
+}
+
+function displayInfo(status, info) {
     infoArea.innerHTML = info + '<br>' + getStatusInfo(status);
 }
 
 module.exports = {
     displayInfo: displayInfo,
     displayStatus: displayStatus,
-    displayFormations: displayFormations
+    displayFormations: displayFormations,
+    dispalyCannotMove:dispalyCannotMove
 }

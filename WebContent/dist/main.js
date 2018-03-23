@@ -127,7 +127,7 @@ var status = {
     currentColor: 0,
     captureLeft: 2,
     lastPosition: false,
-    historyFormation: [[], []],
+    historyFormation: [[], [], []],
     watchMode: false,
     winner: 0
 };
@@ -221,13 +221,22 @@ var control = {
             status.wait = C.CAPTURE;
             status.currentColor = status.currentColor == C.BLACK ? C.WHITE : C.BLACK;
             status.availibleStep = 1;
+            display.displayStatus(status);
         } else {
-            status.stage = C.STAGE_MOVE;
-            status.wait = C.MOVE_SOURCE;
-            status.currentColor = status.currentColor == C.BLACK ? C.WHITE : C.BLACK;
-            status.availibleStep = 1;
+            var oppsiteColor = status.currentColor == C.BLACK ? C.WHITE : C.BLACK;
+            if (canMoveStep(oppsiteColor) == 0) {
+                status.winner = status.currentColor;
+                buildfinishState();
+                display.dispalyCannotMove(status);
+            } else {
+                status.stage = C.STAGE_MOVE;
+                status.wait = C.MOVE_SOURCE;
+                status.currentColor = status.currentColor == C.BLACK ? C.WHITE : C.BLACK;
+                status.availibleStep = 1;
+                display.displayStatus(status);
+            }
         }
-        display.displayStatus(status);
+       
     },
     moveHandler: function (x, y) {
         var position = x + y * 5;
@@ -242,8 +251,13 @@ var control = {
             render.drawCircle(C.COLOR_PINK, x, y);
 
             status.wait = C.MOVE_TARGET;
-        }
-        if (status.wait == C.MOVE_TARGET) {
+        } else if (status.wait == C.MOVE_TARGET) {
+            if (isArrayEqual([x, y], status.lastPosition)) {
+                render.clearCircle();
+                status.stage = C.STAGE_MOVE;
+                status.wait = C.MOVE_SOURCE;
+                return;
+            }
             if (board[position] != 0) {
                 return;
             }
@@ -272,7 +286,7 @@ var control = {
 
             if (resultFormation.length > 0) {
                 if (hisArr.length >= 2 && isSameHistory(hisObj, hisArr[1])) {
-                    display.displayInfo('不能重复在同一位置成同一种型');
+                    display.displayInfo(status, '不能重复在同一位置成同一种型');
                 } else {
                     hisArr.unshift(hisObj = {
                         location: [x, y],
@@ -282,20 +296,24 @@ var control = {
             }
 
             if (status.availibleStep == 0) {
-                status.stage = C.STAGE_MOVE;
-                status.wait = C.MOVE_SOURCE;
-                status.currentColor = status.currentColor == C.BLACK ? C.WHITE : C.BLACK;
-                status.availibleStep = 1;
-                display.displayStatus(status);
+                if (canMoveStep(oppsiteColor) == 0) {
+                    status.winner = status.currentColor;
+                    buildfinishState();
+                    display.dispalyCannotMove(status);
+                } else {
+                    status.stage = C.STAGE_MOVE;
+                    status.wait = C.MOVE_SOURCE;
+                    status.currentColor = status.currentColor == C.BLACK ? C.WHITE : C.BLACK;
+                    status.availibleStep = 1;
+                    display.displayStatus(status);
+                }
             } else {
                 status.stage = C.STAGE_MOVE;
                 status.wait = C.MOVE_CAPTURE;
                 display.displayFormations(status, resultFormation);
-                blinkFlow(resultFormation, function(){});
+                blinkFlow(resultFormation, function () { });
             }
-        }
-
-        if (status.wait == C.MOVE_CAPTURE) {
+        } else if (status.wait == C.MOVE_CAPTURE) {
             var oppsiteColor = status.currentColor == C.BLACK ? C.WHITE : C.BLACK;
             if (board[position] != oppsiteColor) {
                 return;
@@ -305,32 +323,68 @@ var control = {
             render.clearCircle();
             render.drawCircle(C.COLOR_PINK, x, y);
             board[position] = 0;
-            if (getWinner() != 0) {
-                document.getElementById('btnTerminate').style.display = 'none';
-                document.getElementById('btnStart').style.display = '';
-                status.winner = getWinner();
-                status.stage = C.STAGE_FINISH;
-                status.wait = C.OPENING;
-                status.availibleStep = 0;
-                status.captureLeft = 2;
-                board = [
-                    0, 0, 0, 0, 0,
-                    0, 0, 0, 0, 0,
-                    0, 0, 0, 0, 0,
-                    0, 0, 0, 0, 0,
-                    0, 0, 0, 0, 0
-                ];
-
+            if (getEmptyWinner() != 0) {
+                status.winner = getEmptyWinner();
+                buildfinishState();
+                display.displayStatus(status);
             } else if (status.availibleStep == 0) {
-                status.stage = C.STAGE_MOVE;
-                status.wait = C.MOVE_SOURCE;
-                status.currentColor = status.currentColor == C.BLACK ? C.WHITE : C.BLACK;
-                status.availibleStep = 1;
+                if (canMoveStep(oppsiteColor) == 0) {
+                    status.winner = status.currentColor;
+                    buildfinishState();
+                    display.dispalyCannotMove(status);
+                } else {
+                    status.stage = C.STAGE_MOVE;
+                    status.wait = C.MOVE_SOURCE;
+                    status.currentColor = status.currentColor == C.BLACK ? C.WHITE : C.BLACK;
+                    status.availibleStep = 1;
+                    display.displayStatus(status);
+                }
             }
-            display.displayStatus(status);
+           
         }
     }
 };
+
+
+function buildfinishState() {
+    document.getElementById('btnTerminate').style.display = 'none';
+    document.getElementById('btnStart').style.display = '';
+    //status.winner = getWinner();
+    status.stage = C.STAGE_FINISH;
+    status.wait = C.OPENING;
+    status.availibleStep = 0;
+    status.captureLeft = 2;
+    board = [
+        0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0
+    ];
+}
+
+function canMoveStep(color) {
+    var stepCount = 0;
+    for (var i = 0; i < board.length; i++) {
+        if (board[i] == color) {
+            var x = i% 5;
+            var y = Math.floor(i / 5);
+            if (x != 0 && board[i - 1] == 0) {
+                stepCount++;
+            }
+            if (x != 4 && board[i + 1] == 0) {
+                stepCount++;
+            }
+            if (y != 0 && board[i - 5] == 0) {
+                stepCount++;
+            }
+            if (y != 4 && board[i + 5] == 0) {
+                stepCount++;
+            }
+        }
+    }
+    return stepCount;
+}
 
 function isSameHistory(h1, h2) {
     if (!isArrayEqual(h1.location, h2.location)) {
@@ -510,7 +564,7 @@ function isBoardFull() {
     return board.indexOf(0) < 0;
 }
 
-function getWinner() {
+function getEmptyWinner() {
     if (board.indexOf(C.BLACK) < 0) {
         return C.WHITE;
     }
@@ -560,10 +614,11 @@ function getStatusInfo(status) {
             info += '走子阶段：' + color + '吃子，剩余' + status.availibleStep + '子可吃';
         }
     }
-    if (status.stage == C.STAGE_FINISH) {       
+    if (status.stage == C.STAGE_FINISH) {
+        var winColor = '';
         if (status.winner == C.BLACK) {
             winColor = '黑方';
-        } else if(status.winner == C.WHITE){
+        } else if (status.winner == C.WHITE) {
             winColor = '白方';
         }
         if (winColor) {
@@ -611,14 +666,26 @@ function displayFormations(status, formations) {
     infoArea.innerHTML = info + '<br>' + getStatusInfo(status);
 }
 
-function displayInfo(info) {
+function dispalyCannotMove(status) {
+    var info='',looserColor = '';
+    if (status.winner == C.BLACK) {
+        looserColor = '白方';
+    } else if (status.winner == C.WHITE) {
+        looserColor = '黑方';
+    }
+    info+=looserColor + '无法移动';
+    infoArea.innerHTML = info + '<br>' + getStatusInfo(status);
+}
+
+function displayInfo(status, info) {
     infoArea.innerHTML = info + '<br>' + getStatusInfo(status);
 }
 
 module.exports = {
     displayInfo: displayInfo,
     displayStatus: displayStatus,
-    displayFormations: displayFormations
+    displayFormations: displayFormations,
+    dispalyCannotMove:dispalyCannotMove
 }
 
 /***/ }),
