@@ -296,6 +296,7 @@ var control = {
             }
 
             if (status.availibleStep == 0) {
+                var oppsiteColor = status.currentColor == C.BLACK ? C.WHITE : C.BLACK;
                 if (canMoveStep(oppsiteColor) == 0) {
                     status.winner = status.currentColor;
                     buildfinishState();
@@ -328,6 +329,7 @@ var control = {
                 buildfinishState();
                 display.displayStatus(status);
             } else if (status.availibleStep == 0) {
+                var oppsiteColor = status.currentColor == C.BLACK ? C.WHITE : C.BLACK;
                 if (canMoveStep(oppsiteColor) == 0) {
                     status.winner = status.currentColor;
                     buildfinishState();
