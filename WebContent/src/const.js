@@ -1,0 +1,26 @@
+module.exports = {
+    TOPLEFT_X: 50,
+    TOPLEFT_Y: 50,
+    GRID_LENGTH: 100,
+    PIECE_RADIUS: 20,    
+
+    BLACK: 1,
+    WHITE: 2,
+
+    STAGE_READY: 0,
+    STAGE_OCCUPY: 1,
+    STAGE_CAPTURE: 2,
+    STAGE_MOVE: 3,
+    STAGE_FINISH: 4,
+
+    OPENING:0,
+    OCCUPY:1,    
+    CAPTURE:2,   
+    MOVE_SOURCE:3,
+    MOVE_TARGET:4,
+    MOVE_CAPTURE:5,
+    
+    COLOR_PINK:'#FF6666',
+    COLOR_RED:'#FF0000',
+    COLOR_GREEN:'#66CC99'
+};

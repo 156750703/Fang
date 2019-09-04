@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        .operation-area {
+            position: absolute;
+            left: 550px;
+            top: 200px;
+        }
+
+        .btn {
+            color: #333;
+            background-color: #fff;
+            display: inline-block;
+            padding: 6px 12px;
+            margin-bottom: 0;
+            font-size: 14px;
+            font-weight: 400;
+            line-height: 1.42857143;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            touch-action: manipulation;
+            cursor: pointer;
+            user-select: none;
+            background-image: none;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .info-area {
+            margin-top: 20px;
+        }
+        .canvas-group{
+            position: relative;
+            height: 500px;
+            width: 500px;
+        }
+        #selected{
+            position: absolute;
+            top:0;
+            left:0;
+            pointer-events: none;
+        }
+        #highlight{
+            position: absolute;
+            top:0;
+            left:0;
+            pointer-events: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="operation-area">
+        <button class="btn" id="btnStart" style="width:150px;">开&nbsp;始</button>
+        <button class="btn" id="btnTerminate" style="width:150px;display:none;">结&nbsp;束</button>
+        <div id="infoArea" class="info-area">
+        </div>
+    </div>
+
+    <div class="canvas-group" >
+        <canvas id="board" width="500" height="500"></canvas>
+        <canvas id="selected" width="500" height="500"></canvas>
+        <canvas id="highlight" width="500" height="500"></canvas>
+    </div>
+
+    <script src="lib/async.min.js"></script>
+    <script src="dist/main.js"></script>
+</body>
+
+</html>
